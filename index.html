@@ -30,13 +30,37 @@ input:focus{border-color:var(--accent2)}
 .tag{color:#bfc7ff;font-size:12px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
 .scenario{font-size:18px;line-height:1.7;color:#edf0fa}.options{display:grid;gap:13px;margin-top:25px}
 .option{width:100%;text-align:left;padding:18px 19px;border:1px solid var(--border);background:var(--card2);color:var(--text);border-radius:16px;cursor:pointer;transition:.2s;font-size:15px;line-height:1.55}.option:hover{border-color:var(--accent2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.18)}.option b{display:block;color:#b7c0ff;margin-bottom:5px}
-.result{text-align:center}.result-icon{font-size:58px}.profile{font-size:clamp(25px,5vw,37px);font-weight:850;margin:8px 0}.score{color:var(--muted);margin-bottom:22px}
+.result{text-align:center}.result-icon{display:none}.profile{font-size:clamp(25px,5vw,37px);font-weight:850;margin:8px 0}.score{color:var(--muted);margin-bottom:22px}
 .result-box{text-align:left;background:var(--card2);border:1px solid var(--border);border-radius:18px;padding:21px;margin:16px 0}
 .traits{display:grid;gap:12px;margin-top:12px}.trait{background:#10182d;border:1px solid var(--border);padding:13px 15px;border-radius:13px}.trait strong{display:block;margin-bottom:4px}
 .barmini{height:7px;background:#0a1120;border-radius:99px;overflow:hidden;margin-top:7px}.barmini span{display:block;height:100%;background:#7f8dff}
 .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
 .footer{text-align:center;color:#65708c;font-size:12px;margin-top:18px}
 @media(max-width:600px){.card{padding:23px}.intro{padding:36px 21px}.scenario{font-size:17px}.option{padding:16px}}
+
+/* ===== VISUAL PLUS ===== */
+body{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(108,124,255,.30), transparent 28%),
+    radial-gradient(circle at 92% 18%, rgba(52,211,153,.18), transparent 25%),
+    linear-gradient(135deg,#070b16 0%,#101a35 52%,#08131e 100%);
+}
+.container{max-width:1020px}
+.hero-art{margin:0 auto 18px;width:min(620px,100%);height:170px;overflow:hidden;border-radius:22px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(135deg,rgba(104,120,255,.18),rgba(126,226,184,.10))}
+.hero-art svg{width:100%;height:100%;display:block}
+.intro{position:relative;overflow:hidden}
+.intro:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(104,120,255,.08);right:-100px;top:-100px}
+.mark{display:inline-flex!important;align-items:center;justify-content:center;width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,#6878ff,#8d9aff);box-shadow:0 10px 30px rgba(104,120,255,.25)}
+.scenario-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:6px}
+.q-icon{flex:0 0 52px;height:52px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(104,120,255,.22),rgba(126,226,184,.14));border:1px solid rgba(141,154,255,.22);font-size:25px}
+.option{position:relative;overflow:hidden}
+.option:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(#6878ff,#7ee2b8);opacity:0;transition:.2s}
+.option:hover:before{opacity:1}
+.profile-card{display:grid;grid-template-columns:110px 1fr;gap:20px;align-items:center;text-align:left;background:linear-gradient(135deg,rgba(104,120,255,.13),rgba(126,226,184,.06));border:1px solid var(--border);padding:20px;border-radius:20px;margin:18px 0}
+.profile-symbol{width:100px;height:100px;border-radius:24px;display:grid;place-items:center;font-size:52px;background:rgba(104,120,255,.14);border:1px solid rgba(141,154,255,.22)}
+.result-box{box-shadow:0 8px 25px rgba(0,0,0,.12)}
+@media(max-width:600px){.profile-card{grid-template-columns:1fr;text-align:center}.profile-symbol{margin:auto}}
+
 </style>
 </head>
 <body>
@@ -44,7 +68,28 @@ input:focus{border-color:var(--accent2)}
   <div class="top"><div class="brand">GESTÃO EM FOCO<small>Diagnóstico de perfil de gestão</small></div><div class="badge">20 cenários</div></div>
 
   <section id="start" class="card intro">
-    <div class="mark">◈</div>
+    
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 760 190" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1"><stop stop-color="#6878ff"/><stop offset="1" stop-color="#7ee2b8"/></linearGradient>
+        </defs>
+        <rect width="760" height="190" fill="#0d1529"/>
+        <circle cx="100" cy="30" r="90" fill="#6878ff" opacity=".12"/>
+        <circle cx="700" cy="160" r="120" fill="#7ee2b8" opacity=".08"/>
+        <rect x="72" y="45" width="150" height="104" rx="20" fill="#18233f" stroke="#334264"/>
+        <rect x="98" y="70" width="62" height="10" rx="5" fill="#6878ff"/>
+        <rect x="98" y="91" width="98" height="8" rx="4" fill="#64708c"/>
+        <rect x="98" y="109" width="78" height="8" rx="4" fill="#64708c"/>
+        <circle cx="190" cy="126" r="12" fill="#7ee2b8"/>
+        <path d="M285 130 C335 55 385 145 435 72 S540 65 570 112" fill="none" stroke="url(#g1)" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="285" cy="130" r="9" fill="#6878ff"/><circle cx="435" cy="72" r="9" fill="#8d9aff"/><circle cx="570" cy="112" r="9" fill="#7ee2b8"/>
+        <rect x="608" y="46" width="82" height="98" rx="18" fill="#18233f" stroke="#334264"/>
+        <path d="M628 91l14 14 29-35" fill="none" stroke="#7ee2b8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="612" y="132" font-family="Arial" font-size="12" fill="#aeb8d2">GESTÃO</text>
+      </svg>
+    </div>
+<div class="mark">◈</div>
     <h1>Que tipo de gestor você seria?</h1>
     <p>Responda a 20 situações de gestão envolvendo seleção de talentos, vulnerabilidade social, inclusão, produtividade, segurança, desenvolvimento e tomada de decisão.</p>
     <p><strong>Não existe resposta certa.</strong> O resultado identifica o perfil que mais combina com o conjunto das suas decisões.</p>
@@ -117,6 +162,9 @@ const profiles=[
   labels:["Inclusão e equidade","Desenvolvimento de pessoas","Inovação e adaptação"]}
 ];
 
+
+const icons=["👥","🌱","🛡️","🏆","🤝","⚙️","♿","📚","🚌","🎯","📈","💬","🌎","🗣️","🚦","🚀","🔐","⚡","🧩","💡"];
+
 let current=0, answers=[], name="";
 
 function startGame(){
@@ -128,7 +176,8 @@ function render(){
  document.getElementById("counter").textContent=`Cenário ${current+1} de ${questions.length}`;
  document.getElementById("percent").textContent=pct+"%";document.getElementById("bar").style.width=pct+"%";
  document.getElementById("tag").textContent=`CENÁRIO ${String(current+1).padStart(2,"0")}`;
- document.getElementById("title").textContent=q[0];document.getElementById("scenario").textContent=q[1];
+ document.getElementById("title").innerHTML=`<div class="scenario-head"><div class="q-icon">${icons[current]}</div><div>${q[0]}</div></div>`;
+ document.getElementById("scenario").textContent=q[1];
  const box=document.getElementById("options");box.innerHTML="";
  q.slice(2).forEach((o,i)=>{let b=document.createElement("button");b.className="option";b.innerHTML=`<b>Opção ${i+1}</b>${o}`;b.onclick=()=>choose(i);box.appendChild(b);});
 }
@@ -143,7 +192,8 @@ function showResult(){
  }
  document.getElementById("game").classList.add("hidden");document.getElementById("result").classList.remove("hidden");
  const p=profiles[winner];
- document.getElementById("icon").textContent=p.icon;document.getElementById("profile").textContent=p.name;
+ document.getElementById("icon").textContent="";
+ document.getElementById("profile").innerHTML=`<div class="profile-card"><div class="profile-symbol">${p.icon}</div><div><div class="tag">PERFIL DEFINITIVO</div><div style="font-size:clamp(24px,4vw,34px);font-weight:850;margin-top:5px">${p.name}</div></div></div>`;
  document.getElementById("score").textContent=`Pontuação: Perfil 1 = ${counts[0]} • Perfil 2 = ${counts[1]} • Perfil 3 = ${counts[2]}`;
  document.getElementById("greeting").textContent=name?`Análise de ${name}`:"Sua análise";
  document.getElementById("description").textContent=p.desc;
