@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão em Foco — Diagnóstico de Perfil</title>
+<style>
+:root{
+  --bg:#080d19;--bg2:#11182b;--card:rgba(18,26,46,.96);--card2:#1a2440;
+  --text:#f5f7ff;--muted:#aeb8d2;--accent:#6878ff;--accent2:#8d9aff;
+  --border:#2b3859;--good:#7ee2b8;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+background:radial-gradient(circle at 10% 0%,#26345e 0,#0b1020 38%,#070b14 100%);}
+.container{width:min(980px,93%);margin:auto;padding:28px 0 50px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.brand{font-weight:850;letter-spacing:.03em}.brand small{display:block;color:#8f9bc1;font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
+.badge{border:1px solid var(--border);padding:7px 11px;border-radius:999px;color:#bec7ff;font-size:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:26px;padding:34px;box-shadow:0 22px 70px rgba(0,0,0,.28)}
+.intro{text-align:center;padding:48px 34px}.intro .mark{font-size:46px}.intro h1{font-size:clamp(34px,6vw,60px);line-height:1.02;margin:10px 0 16px}
+h2{font-size:clamp(25px,4vw,37px);line-height:1.12;margin:8px 0 16px} h3{margin:0 0 9px}
+p{line-height:1.7;color:var(--muted)}.intro p{max-width:720px;margin:0 auto 25px}
+input{width:min(420px,100%);padding:14px 16px;border-radius:13px;border:1px solid var(--border);background:#0d1425;color:white;font-size:16px;outline:none;margin-bottom:14px}
+input:focus{border-color:var(--accent2)}
+.btn{border:0;border-radius:14px;padding:14px 22px;background:var(--accent);color:white;font-weight:800;font-size:16px;cursor:pointer;transition:.2s}.btn:hover{transform:translateY(-2px);background:var(--accent2)}
+.secondary{background:transparent;border:1px solid var(--border);color:var(--text)}
+.hidden{display:none!important}
+.progress-wrap{margin-bottom:28px}.progress-line{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:9px}.progress{height:9px;background:#0b1222;border-radius:99px;overflow:hidden}.bar{height:100%;width:5%;background:linear-gradient(90deg,var(--accent),#aeb5ff);transition:.3s}
+.tag{color:#bfc7ff;font-size:12px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.scenario{font-size:18px;line-height:1.7;color:#edf0fa}.options{display:grid;gap:13px;margin-top:25px}
+.option{width:100%;text-align:left;padding:18px 19px;border:1px solid var(--border);background:var(--card2);color:var(--text);border-radius:16px;cursor:pointer;transition:.2s;font-size:15px;line-height:1.55}.option:hover{border-color:var(--accent2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.18)}.option b{display:block;color:#b7c0ff;margin-bottom:5px}
+.result{text-align:center}.result-icon{font-size:58px}.profile{font-size:clamp(25px,5vw,37px);font-weight:850;margin:8px 0}.score{color:var(--muted);margin-bottom:22px}
+.result-box{text-align:left;background:var(--card2);border:1px solid var(--border);border-radius:18px;padding:21px;margin:16px 0}
+.traits{display:grid;gap:12px;margin-top:12px}.trait{background:#10182d;border:1px solid var(--border);padding:13px 15px;border-radius:13px}.trait strong{display:block;margin-bottom:4px}
+.barmini{height:7px;background:#0a1120;border-radius:99px;overflow:hidden;margin-top:7px}.barmini span{display:block;height:100%;background:#7f8dff}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.footer{text-align:center;color:#65708c;font-size:12px;margin-top:18px}
+@media(max-width:600px){.card{padding:23px}.intro{padding:36px 21px}.scenario{font-size:17px}.option{padding:16px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="top"><div class="brand">GESTÃO EM FOCO<small>Diagnóstico de perfil de gestão</small></div><div class="badge">20 cenários</div></div>
+
+  <section id="start" class="card intro">
+    <div class="mark">◈</div>
+    <h1>Que tipo de gestor você seria?</h1>
+    <p>Responda a 20 situações de gestão envolvendo seleção de talentos, vulnerabilidade social, inclusão, produtividade, segurança, desenvolvimento e tomada de decisão.</p>
+    <p><strong>Não existe resposta certa.</strong> O resultado identifica o perfil que mais combina com o conjunto das suas decisões.</p>
+    <input id="name" maxlength="40" placeholder="Seu nome (opcional)">
+    <br>
+    <button class="btn" onclick="startGame()">Começar diagnóstico</button>
+  </section>
+
+  <section id="game" class="card hidden">
+    <div class="progress-wrap">
+      <div class="progress-line"><span id="counter">Cenário 1 de 20</span><span id="percent">5%</span></div>
+      <div class="progress"><div id="bar" class="bar"></div></div>
+    </div>
+    <div class="tag" id="tag"></div>
+    <h2 id="title"></h2>
+    <div class="scenario" id="scenario"></div>
+    <div class="options" id="options"></div>
+  </section>
+
+  <section id="result" class="card result hidden">
+    <div class="result-icon" id="icon"></div>
+    <div class="tag">SEU RESULTADO</div>
+    <div class="profile" id="profile"></div>
+    <div class="score" id="score"></div>
+    <div class="result-box"><h3 id="greeting"></h3><p id="description"></p></div>
+    <div class="result-box"><h3>Sua assinatura de gestão</h3><div id="traits" class="traits"></div></div>
+    <div class="result-box"><h3>Como você tende a agir</h3><p id="behavior"></p></div>
+    <div class="actions"><button class="btn" onclick="restart()">Refazer diagnóstico</button><button class="btn secondary" onclick="window.print()">Imprimir resultado</button></div>
+  </section>
+
+  <div class="footer">Projeto educativo • Resultado baseado nas escolhas deste teste e não constitui avaliação profissional.</div>
+</div>
+
+<script>
+const questions=[
+["Seleção de Talentos e Viés de CEP","Dois candidatos possuem qualificações idênticas, mas um mora a 15 minutos e outro a 2 horas, em uma região com transporte instável.","Você escolhe o candidato mais próximo para reduzir riscos operacionais.","Você entrevista os dois com os mesmos critérios e explica as exigências de pontualidade.","Você entrevista os dois e avalia escala flexível, transporte ou trabalho híbrido quando possível."],
+["Reabilitação e Segunda Chance","Um jovem de área vulnerável teve passagem pelo sistema socioeducativo por infração menor na adolescência, mas concluiu curso técnico com destaque.","Descarta a candidatura para evitar riscos à empresa.","Contrata para experiência, mantendo acompanhamento e limites de acesso proporcionais à função.","Considera o histórico, mas prioriza competências atuais e cria mentoria para desenvolvimento."],
+["Produtividade e Impacto do Entorno","Um colaborador de alto desempenho começa a atrasar após conflitos e insegurança no bairro onde mora.","Aplica advertência porque metas e horários devem ser cumpridos.","Demonstra empatia e pede que ele encontre uma solução própria para não afetar a operação.","Oferece apoio do RH e avalia flexibilidade de horário, turno ou local de trabalho."],
+["Promoção Interna","Duas pessoas disputam uma liderança. Uma tem mais tempo de empresa; outra apresenta resultados excelentes e capacidade de desenvolver a equipe.","Prioriza a pessoa com mais tempo de casa.","Compara histórico, resultados e competências usando critérios objetivos.","Cria uma avaliação estruturada e considera também potencial de liderança e desenvolvimento."],
+["Conflito na Equipe","Dois colaboradores discordam constantemente e a tensão começa a afetar o setor.","Define quem está errado e encerra a discussão rapidamente.","Escuta os dois lados e reforça as regras de convivência.","Media o conflito, busca a causa e cria um acordo de funcionamento da equipe."],
+["Erro Operacional","Um funcionário com bom histórico comete um erro que gera retrabalho, sem intenção de causar prejuízo.","Aplica uma punição para deixar claro que erros têm consequências.","Registra o ocorrido e verifica se foi falha individual ou de processo.","Corrige o problema e usa o caso para melhorar treinamento e o processo."],
+["Acessibilidade","Uma pessoa qualificada precisa de uma adaptação simples no posto de trabalho para executar a função.","Evita a contratação porque adaptações podem aumentar a complexidade.","Analisa a necessidade e verifica o que é viável dentro das regras da empresa.","Planeja a adaptação junto com RH e segurança, buscando remover a barreira."],
+["Treinamento","A empresa precisa reduzir custos e existe um treinamento importante para novos funcionários.","Corta o treinamento para preservar o orçamento.","Mantém apenas o conteúdo essencial e acompanha os resultados.","Procura uma alternativa eficiente de treinamento sem eliminar o desenvolvimento necessário."],
+["Transporte e Escala","Uma mudança de turno dificulta o acesso de parte da equipe por causa do transporte público.","Mantém o turno porque a operação precisa seguir o planejamento.","Avalia caso a caso, sem prometer mudanças que não sejam viáveis.","Estuda alternativas de horário, carona corporativa, transporte ou reorganização quando possível."],
+["Recrutamento sem Preconceito","Um currículo vem de uma região conhecida por altos índices de vulnerabilidade, mas apresenta ótimas qualificações.","Prefere currículos de regiões consideradas mais seguras.","Analisa a candidatura pelos critérios da vaga e investiga apenas informações relevantes ao trabalho.","Além dos critérios objetivos, busca ampliar canais de recrutamento para alcançar talentos diversos."],
+["Meta Agressiva","A diretoria aumenta uma meta de forma significativa em um período curto.","Cobra a equipe e espera que todos encontrem uma forma de entregar.","Comunica a nova meta e acompanha dificuldades individuais.","Negocia prioridades, identifica gargalos e cria um plano para alcançar o resultado sem comprometer a equipe."],
+["Saúde e Bem-Estar","Uma pessoa apresenta queda temporária de rendimento após uma situação pessoal difícil.","Considera que questões pessoais não devem entrar na gestão.","Conversa de forma reservada e verifica se há algo pontual que possa ser ajustado.","Aciona os canais de apoio disponíveis e combina uma adaptação temporária com acompanhamento."],
+["Diversidade de Ideias","Uma equipe é muito homogênea e tende a repetir as mesmas soluções.","Mantém o modelo atual se os resultados forem bons.","Estimula opiniões diferentes quando forem úteis para o trabalho.","Cria práticas para ampliar perspectivas e tornar a participação mais equilibrada."],
+["Feedback","Um colaborador tecnicamente bom, mas com dificuldades de relacionamento, precisa receber feedback.","Faz uma cobrança direta e deixa claro que o comportamento precisa mudar.","Apresenta exemplos concretos e combina expectativas.","Faz feedback estruturado, oferece orientação e acompanha a evolução."],
+["Ausência Imprevista","Uma pessoa falta por um problema de transporte causado por uma ocorrência inesperada na região onde mora.","Aplica a regra de ausência sem considerar o contexto.","Registra a ocorrência e avalia se há justificativa e impacto na operação.","Resolve a necessidade imediata e avalia soluções para reduzir a recorrência."],
+["Potencial de Crescimento","Um funcionário recém-contratado mostra grande potencial, mas ainda não domina alguns processos.","Evita dar novas responsabilidades até que ele esteja totalmente pronto.","Mantém suas tarefas e observa a evolução.","Oferece treinamento gradual e responsabilidades compatíveis com seu desenvolvimento."],
+["Segurança e Inclusão","Uma medida de segurança pode afetar desproporcionalmente pessoas que precisam de adaptações de acesso.","Implementa a medida de forma igual para todos.","Aplica a regra e analisa exceções quando necessário.","Revisa o procedimento para preservar segurança e acessibilidade ao mesmo tempo."],
+["Pressão por Resultados","Uma equipe entrega muito, mas apresenta sinais de desgaste e queda de colaboração.","Mantém a pressão enquanto os resultados continuarem aparecendo.","Conversa com a equipe e monitora o impacto antes de mudar a cobrança.","Reorganiza prioridades e busca produtividade sustentável no longo prazo."],
+["Contratação por Competência","Uma candidata tem menos experiência formal, mas apresenta formação recente excelente e demonstra grande capacidade de aprendizado.","Escolhe quem tem mais experiência para reduzir riscos.","Usa uma matriz objetiva de experiência, conhecimento e desempenho na entrevista.","Considera também potencial, capacidade de aprendizado e oferece desenvolvimento se a função permitir."],
+["Decisão Difícil","Uma solução mais inclusiva exige uma pequena mudança de processo, mas pode trazer benefícios de longo prazo.","Mantém o processo atual para evitar custos e mudanças.","Calcula custos, riscos e benefícios antes de decidir.","Testa a solução em pequena escala, mede resultados e amplia se funcionar."]
+];
+
+const profiles=[
+ {name:"Perfil 1 — Gestor Tradicional / Pragmático",icon:"🧭",
+  desc:"Seu perfil prioriza previsibilidade, controle, cumprimento de regras e continuidade operacional. Você tende a tomar decisões pensando primeiro em riscos, custos, metas e estabilidade.",
+  behavior:"Em situações de pressão, você tende a escolher a solução mais direta e controlável. Seu ponto forte é a objetividade; seu principal desafio é garantir que eficiência e regras não deixem de considerar circunstâncias humanas relevantes.",
+  labels:["Foco em operação","Controle e previsibilidade","Decisão objetiva"]},
+ {name:"Perfil 2 — Observador Neutro",icon:"🔎",
+  desc:"Seu perfil busca equilíbrio. Você tende a analisar os fatos, ouvir diferentes lados e aplicar critérios objetivos antes de tomar uma decisão, evitando conclusões precipitadas.",
+  behavior:"Você costuma preferir decisões proporcionais ao caso. Seu ponto forte é a cautela e a capacidade de avaliar contexto; seu desafio pode ser transformar análise em ação quando uma mudança mais ousada é necessária.",
+  labels:["Equilíbrio","Análise de contexto","Critério e cautela"]},
+ {name:"Perfil 3 — Administrador Inovador & Inclusivo",icon:"💡",
+  desc:"Seu perfil procura conciliar desempenho com inclusão, desenvolvimento de pessoas e adaptação de processos. Você tende a enxergar problemas sociais como fatores que podem exigir soluções de gestão, e não apenas punição.",
+  behavior:"Você costuma buscar soluções sustentáveis: adaptar processos, desenvolver talentos, prevenir problemas e ampliar oportunidades sem abandonar os objetivos da empresa. Seu desafio é garantir que inovação continue alinhada a recursos, regras e resultados.",
+  labels:["Inclusão e equidade","Desenvolvimento de pessoas","Inovação e adaptação"]}
+];
+
+let current=0, answers=[], name="";
+
+function startGame(){
+ name=(document.getElementById("name").value||"").trim();
+ current=0;answers=[];document.getElementById("start").classList.add("hidden");document.getElementById("result").classList.add("hidden");document.getElementById("game").classList.remove("hidden");render();
+}
+function render(){
+ const q=questions[current], pct=Math.round(((current+1)/questions.length)*100);
+ document.getElementById("counter").textContent=`Cenário ${current+1} de ${questions.length}`;
+ document.getElementById("percent").textContent=pct+"%";document.getElementById("bar").style.width=pct+"%";
+ document.getElementById("tag").textContent=`CENÁRIO ${String(current+1).padStart(2,"0")}`;
+ document.getElementById("title").textContent=q[0];document.getElementById("scenario").textContent=q[1];
+ const box=document.getElementById("options");box.innerHTML="";
+ q.slice(2).forEach((o,i)=>{let b=document.createElement("button");b.className="option";b.innerHTML=`<b>Opção ${i+1}</b>${o}`;b.onclick=()=>choose(i);box.appendChild(b);});
+}
+function choose(i){answers.push(i);current++;if(current<questions.length)render();else showResult();}
+function showResult(){
+ const counts=[0,0,0];answers.forEach(a=>counts[a]++);
+ let max=Math.max(...counts), winner=counts.indexOf(max);
+ // Desempate determinístico: maior pontuação em decisões inclusivas, depois observadoras, depois pragmáticas.
+ if(counts.filter(x=>x===max).length>1){
+   const pref=[2,1,0];
+   winner=pref.find(i=>counts[i]===max);
+ }
+ document.getElementById("game").classList.add("hidden");document.getElementById("result").classList.remove("hidden");
+ const p=profiles[winner];
+ document.getElementById("icon").textContent=p.icon;document.getElementById("profile").textContent=p.name;
+ document.getElementById("score").textContent=`Pontuação: Perfil 1 = ${counts[0]} • Perfil 2 = ${counts[1]} • Perfil 3 = ${counts[2]}`;
+ document.getElementById("greeting").textContent=name?`Análise de ${name}`:"Sua análise";
+ document.getElementById("description").textContent=p.desc;
+ document.getElementById("behavior").textContent=p.behavior;
+ const traitData=[
+  ["Perfil 1 — Pragmatismo",Math.round(counts[0]/20*100),p.labels[0]],
+  ["Perfil 2 — Equilíbrio",Math.round(counts[1]/20*100),p.labels[1]],
+  ["Perfil 3 — Inclusão",Math.round(counts[2]/20*100),p.labels[2]]
+ ];
+ document.getElementById("traits").innerHTML=traitData.map(t=>`<div class="trait"><strong>${t[0]} — ${t[1]}%</strong><span>${t[2]}</span><div class="barmini"><span style="width:${Math.max(t[1],3)}%"></span></div></div>`).join("");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function restart(){document.getElementById("result").classList.add("hidden");document.getElementById("start").classList.remove("hidden");document.getElementById("name").value=name;}
+</script>
+</body>
+</html>
