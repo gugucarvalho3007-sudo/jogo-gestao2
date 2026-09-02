@@ -10,7 +10,7 @@ const questions=[
 ["Transporte e Escala","Uma mudança de turno dificulta o acesso de parte da equipe por causa do transporte público.","Mantém o turno porque a operação precisa seguir o planejamento.","Avalia caso a caso, sem prometer mudanças que não sejam viáveis.","Estuda alternativas de horário, carona corporativa, transporte ou reorganização quando possível."],
 ["Recrutamento sem Preconceito","Um currículo vem de uma região conhecida por altos índices de vulnerabilidade, mas apresenta ótimas qualificações.","Prefere currículos de regiões consideradas mais seguras.","Analisa a candidatura pelos critérios da vaga e investiga apenas informações relevantes ao trabalho.","Além dos critérios objetivos, busca ampliar canais de recrutamento para alcançar talentos diversos."],
 ["Meta Agressiva","A diretoria aumenta uma meta de forma significativa em um período curto.","Cobra a equipe e espera que todos encontrem uma forma de entregar.","Comunica a nova meta e acompanha dificuldades individuais.","Negocia prioridades, identifica gargalos e cria um plano para alcançar o resultado sem comprometer a equipe."],
-["Saúde e Bem-Estar","Uma pessoa apresenta queda temporária de rendimento após uma situação pessoal difícil.","Considera que questões pessoais não devem entrar na gestão.","Conversa de forma reservada e verifica se há algo pontual que possa ser adjusted.","Aciona os canais de apoio disponíveis e combina uma adaptação temporária com acompanhamento."],
+["Saúde e Bem-Estar","Uma pessoa apresenta queda temporária de rendimento após uma situação pessoal difícil.","Considera que questões pessoais não devem entrar na gestão.","Conversa de forma reservada e verifica se há algo pontual que possa ser ajustado.","Aciona os canais de apoio disponíveis e combina uma adaptação temporária com acompanhamento."],
 ["Diversidade de Ideias","Uma equipe é muito homogênea e tende a repetir as mesmas soluções.","Mantém o modelo atual se os resultados forem bons.","Estimula opiniões diferentes quando forem úteis para o trabalho.","Cria práticas para ampliar perspectivas e tornar a participação mais equilibrada."],
 ["Feedback","Um colaborador tecnicamente bom, mas com dificuldades de relacionamento, precisa receber feedback.","Faz uma cobrança direta e deixa claro que o comportamento precisa mudar.","Apresenta exemplos concretos e combina expectativas.","Faz feedback estruturado, oferece orientação e acompanha a evolução."],
 ["Ausência Imprevista","Uma pessoa falta por um problema de transporte causado por uma ocorrência inesperada na região onde mora.","Aplica a regra de ausência sem considerar o contexto.","Registra a ocorrência e avalia se há justificativa e impacto na operação.","Resolve a necessidade imediata e avalia soluções para reduzir a recorrência."],
@@ -40,9 +40,9 @@ const icons=["👥","🌱","🛡️","🏆","🤝","⚙️","♿","📚","🚌",
 
 let current=0, answers=[], name="", currentSessionQuestions=[];
 
-// Função utilitária para embaralhar um array (Fisher-Yates algorithm)
-function shuffleArray(array) {
-  const arr = [...array];
+// Algoritmo de embaralhamento Fisher-Yates
+function shuffle(array) {
+  let arr = array.slice();
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -55,10 +55,12 @@ function startGame(){
  current=0;
  answers=[];
  
- // Prepara o deck da partida: embaralha as perguntas e as alternativas de cada uma
- currentSessionQuestions = shuffleArray(questions).map((q, idx) => {
-   // Mapeia o texto original da alternativa ao seu perfil (0, 1 ou 2)
-   const opts = [
+ // 1. Embaralha a ordem das 20 perguntas
+ const shuffledQuestions = shuffle(questions);
+ 
+ // 2. Embaralha as alternativas de CADA pergunta vinculando o perfil correto
+ currentSessionQuestions = shuffledQuestions.map((q, idx) => {
+   const optionsMapped = [
      { text: q[2], profileIndex: 0 },
      { text: q[3], profileIndex: 1 },
      { text: q[4], profileIndex: 2 }
@@ -66,7 +68,7 @@ function startGame(){
    return {
      title: q[0],
      scenario: q[1],
-     options: shuffleArray(opts),
+     options: shuffle(optionsMapped),
      icon: icons[idx % icons.length]
    };
  });
@@ -78,7 +80,9 @@ function startGame(){
 }
 
 function render(){
- const q=currentSessionQuestions[current], pct=Math.round(((current+1)/currentSessionQuestions.length)*100);
+ const q = currentSessionQuestions[current];
+ const pct = Math.round(((current+1)/currentSessionQuestions.length)*100);
+ 
  document.getElementById("counter").textContent=`Cenário ${current+1} de ${currentSessionQuestions.length}`;
  document.getElementById("percent").textContent=pct+"%";
  document.getElementById("bar").style.width=pct+"%";
@@ -88,10 +92,13 @@ function render(){
  
  const box=document.getElementById("options");
  box.innerHTML="";
+ 
+ // As opções serão exibidas na ordem aleatória sorteada para este cenário
  q.options.forEach((opt, i)=>{
    let b=document.createElement("button");
    b.className="option";
    b.innerHTML=`<b>Opção ${i+1}</b>${opt.text}`;
+   // Envia o perfil original (0, 1 ou 2), não a posição visual (i)
    b.onclick=()=>choose(opt.profileIndex);
    box.appendChild(b);
  });
@@ -100,15 +107,18 @@ function render(){
 function choose(profileIdx){
  answers.push(profileIdx);
  current++;
- if(current < currentSessionQuestions.length) render();
- else showResult();
+ if(current < currentSessionQuestions.length) {
+   render();
+ } else {
+   showResult();
+ }
 }
 
 function showResult(){
  const counts=[0,0,0];
  answers.forEach(a=>counts[a]++);
- let max=Math.max(...counts), winner=counts.indexOf(max);
  
+ let max=Math.max(...counts), winner=counts.indexOf(max);
  if(counts.filter(x=>x===max).length>1){
    const pref=[2,1,0];
    winner=pref.find(i=>counts[i]===max);
